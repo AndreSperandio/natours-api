@@ -1,9 +1,19 @@
 const fs = require('fs');
 const express = require('express');
+const morgan = require('morgan');
+const req = require('express/lib/request');
+const res = require('express/lib/response');
 
 const app = express();
 
+//MIDDLEWARE
+app.use(morgan('dev'));
 app.use(express.json());
+
+app.use((req, res, next) => {
+    req.requestTime = new Date().toISOString();
+    next();
+})
 
 // app.get('/', (req, res) => {
 //     res
@@ -19,6 +29,7 @@ const tours = JSON.parse(
     fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
 );
 
+//ROUTE HANDLERS
 const getAllTours = (req, res) => {
     res
     .status(200)
@@ -101,11 +112,40 @@ const deleteTour =  (req, res) => {
     });
 }; 
 
-app.use((req, res, next) => {
-    req.requestTime = new Date().toISOString();
-    next();
-})
+const getAllUsers = (req, res) => {
+    res.status(500).json({
+        status: 'error',
+        message: 'Route Undefined'
+    });
+};
 
+const createUser = (req, res) => {
+    res.status(500).json({
+        status: 'error',
+        message: 'Route Undefined'
+    });
+};
+
+const getUser = (req, res) => {
+    res.status(500).json({
+        status: 'error',
+        message: 'Route Undefined'
+    });
+};
+
+const updateUser = (req, res) => {
+    res.status(500).json({
+        status: 'error',
+        message: 'Route Undefined'
+    });
+};
+
+const deleteUser = (req, res) => {
+    res.status(500).json({
+        status: 'error',
+        message: 'Route Undefined'
+    });
+};
 
 // app.get('/api/v1/tours', getAllTours);
 // app.post('/api/v1/tours', createTour);
@@ -113,6 +153,7 @@ app.use((req, res, next) => {
 // app.patch('/api/v1/tours/:id', updateTour);
 // app.delete('/api/v1/tours/:id', deleteTour);
 
+//ROUTES
 app
     .route('/api/v1/tours')
     .get(getAllTours)
@@ -124,6 +165,18 @@ app
     .patch(updateTour)
     .delete(deleteTour);
 
+app 
+    .route('/api/v1/users')
+    .get(getAllUsers)
+    .post(createUser);
+
+app
+    .route('/api/v1/users/:id')
+    .get(getUser)
+    .patch(updateUser)
+    .delete(deleteUser);
+
+//START SERVER
 const port = 3000;
 app.listen(port, () => {
     console.log(`Running on port ${port}`);
